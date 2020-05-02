@@ -1,11 +1,13 @@
 "use strict";
 
+import { BatchConfig } from "sinek";
 const debug = require("debug")("kafka-streams:kafkafactory");
-
 const JSKafkaClient = require("./client/JSKafkaClient.js");
 const NativeKafkaClient = require("./client/NativeKafkaClient.js");
 
-class KafkaFactory {
+export default class KafkaFactory {
+    config: any
+    batchOptions?: BatchConfig
 
     /**
      * helper for KafkaStreams to wrap
@@ -13,7 +15,7 @@ class KafkaFactory {
      * @param config
      * @param batchOptions - optional
      */
-    constructor(config, batchOptions = undefined) {
+    constructor(config: any, batchOptions?: BatchConfig) {
 
         if (!config) {
             throw new Error("kafka factory constructor expects a configuration object.");
@@ -23,7 +25,7 @@ class KafkaFactory {
         this.batchOptions = batchOptions;
     }
 
-    getKafkaClient(topic) {
+    getKafkaClient(topic: string) {
 
         if (this.config.noptions && typeof this.config.noptions === "object") {
             debug("creating new native kafka client");
@@ -38,5 +40,3 @@ class KafkaFactory {
         return new JSKafkaClient(topic, this.config);
     }
 }
-
-module.exports = KafkaFactory;

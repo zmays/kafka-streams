@@ -1,8 +1,8 @@
-"use strict";
+import {Storage} from "kafka-streams"
 
-const Promise = require("bluebird");
-
-class KStorage {
+export default class KStorage implements Storage {
+    options?: object;
+    state: object
 
     /**
      * be aware that even though KStorage is built on Promises
@@ -12,19 +12,19 @@ class KStorage {
      * in a large amount of missing get operations followed by
      * set operations
      */
-    constructor(options) {
+    constructor(options?: object) {
         this.options = options;
         this.state = {};
     }
 
     /* NOTE: there is no open() method, meaning the functions have to work lazily */
 
-    set(key, value) {
+    set(key: string, value: any): Promise<any> {
         this.state[key] = value;
         return Promise.resolve(value);
     }
 
-    setSmaller(key = "min", value) {
+    setSmaller(key = "min", value: any): Promise<any> {
 
         if (!this.state[key]) {
             this.state[key] = value;
@@ -37,7 +37,7 @@ class KStorage {
         return Promise.resolve(this.state[key]);
     }
 
-    setGreater(key = "max", value) {
+    setGreater(key = "max", value: any): Promise<any> {
 
         if (!this.state[key]) {
             this.state[key] = value;
@@ -50,7 +50,7 @@ class KStorage {
         return Promise.resolve(this.state[key]);
     }
 
-    increment(key, by = 1) {
+    increment(key: string, by: number = 1): Promise<number> {
         if (!this.state[key]) {
             this.state[key] = by;
         } else {
@@ -59,34 +59,32 @@ class KStorage {
         return Promise.resolve(this.state[key]);
     }
 
-    sum(key, value) {
+    sum(key: string, value: number): Promise<any> {
         return this.increment(key, value);
     }
 
-    get(key) {
+    get(key: string): Promise<any> {
         return Promise.resolve(this.state[key]);
     }
 
-    getState() {
+    getState(): Promise<object> {
         return Promise.resolve(this.state);
     }
 
-    setState(newState) {
+    setState(newState: object): Promise<boolean> {
         this.state = newState;
         return Promise.resolve(true);
     }
 
-    getMin(key = "min") {
+    getMin(key: string = "min"): Promise<any> {
         return Promise.resolve(this.state[key]);
     }
 
-    getMax(key = "max") {
+    getMax(key: string = "max"): Promise<any> {
         return Promise.resolve(this.state[key]);
     }
 
-    close() {
+    close(): Promise<boolean> {
         return Promise.resolve(true);
     }
 }
-
-module.exports = KStorage;

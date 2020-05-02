@@ -1,4 +1,5 @@
-"use strict";
+import * as Promise from 'bluebird'
+global.Promise = Promise
 
 const KStream = require("./lib/dsl/KStream.js");
 const KTable = require("./lib/dsl/KTable.js");

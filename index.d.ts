@@ -147,23 +147,14 @@ declare module "kafka-streams" {
     export class NativeKafkaClient extends KafkaClient { }
 
     export interface Storage {
-        set(key: any, value: any): Promise<any>;
-        get(key: any): Promise<any>;
-        increment(key: any, by?: number): Promise<number>;
+        set(key: string, value: any): Promise<any>;
+        get(key: string): Promise<any>;
+        increment(key: string, by?: number): Promise<number>;
         getState(): Promise<object>;
         setState(newState: object): Promise<boolean>;
         close(): Promise<boolean>;
     }
 
-    export class KStorage implements Storage {
-        constructor(options: object);
-        set(key: any, value: any): Promise<any>;
-        get(key: any): Promise<any>;
-        increment(key: any, by?: number): Promise<number>;
-        getState(): Promise<object>;
-        setState(newState: object): Promise<boolean>;
-        close(): Promise<boolean>;
-    }
 
     export class Window {
         constructor(container: any[], collect: boolean);
